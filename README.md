@@ -1,70 +1,62 @@
-# Traction Backend
+<p align="center">
+  <img src="assets/traction-api-mark.png" alt="Traction API endpoints and database mark" width="200" />
+</p>
 
-A platform that gives founders a web presence for their ideas before they build anything - shareable, discoverable, and credible. By allowing founders to easily structure their ideas, receive AI-generated feedback, and instantly produce an elegant web summary and pitch deck, Nebular Blazar replaces scattered PDFs and slides with a single, modern URL.
+<h1 align="center">Traction Backend</h1>
 
-## Features
+<p align="center">FastAPI and PostgreSQL API for the Traction client. The service includes routes for authentication, projects, chat, documents, public project pages, and sharing. The frontend is in <a href="https://github.com/AbhiramVSA/traction-ai">traction-ai</a>.</p>
 
-- **Ideation Assistant**: Chat with an AI that helps refine messy ideas into structured business models while offering honest readiness flags.
-- **Dynamic Deck Generation**: AI automatically generates rich, interactive, full-screen HTML/CSS/JS pitch decks based on structured data.
-- **Investor Summary**: Instantly highlights strengths, concerns, and key metrics in a simple view.
-- **llm.txt Endpoints**: Provides a machine-readable startup spec, optimized for AI agents discovering projects.
-- **Effortless Sharing**: Share one link that includes both the generated pitch deck and summary.
+## Stack
 
-## Tech Stack
+| Area | Technology |
+| --- | --- |
+| API | FastAPI, Python 3.12+ |
+| Database | PostgreSQL, SQLModel, asyncpg |
+| Migrations | Alembic |
+| Authentication | JWT and Google OAuth via Authlib |
+| AI | OpenAI and Pydantic AI |
+| Environment | `uv` |
 
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL
-- **ORM**: SQLModel / SQLAlchemy
-- **Database Migrations**: Alembic
-- **AI Models**: OpenAI API, Pydantic-AI
-- **Authentication**: JWT, Google OAuth 2.0 Authlib
-- **Templating**: Jinja2 (server-side rendered views)
-- **Environment Management**: uv (Python package manager)
+## Local setup
 
-## Prerequisites
+Install the locked dependencies from the repository root:
 
-- Python 3.12+
-- uv package manager
-- Docker and Docker Compose (for running PostgreSQL locally)
+```bash
+uv sync --locked
+```
 
-## Getting Started
+Start a PostgreSQL database. This repository does not include a Docker Compose file.
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd traction-backend
-   ```
+Create a root `.env` file. The settings module reads it when you run the API from `backend/`.
 
-2. **Configure Environment Variables**
-   Create or modify the `.env` file in the root directory to ensure all necessary keys are populated. Typical required values include database credentials, secret keys, Google API credentials, and your OpenAI API key.
+```env
+MODE=development
+SECRET_KEY=replace-with-a-local-secret
+DATABASE_USER=postgres
+DATABASE_PASSWORD=replace-with-your-local-password
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_NAME=app_db
+OPENAI_API_KEY=replace-with-your-key
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=
+```
 
-3. **Start the Database**
-   Using Docker Compose, you can quickly spin up a local PostgreSQL instance:
-   ```bash
-   docker-compose up -d
-   ```
+The database must be available before the API starts. Apply migrations, then start the server:
 
-4. **Install Dependencies**
-   Install the Python environment and dependencies using uv:
-   ```bash
-   uv sync
-   ```
+```bash
+cd backend
+uv run --project .. alembic upgrade head
+uv run --project .. uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
 
-5. **Start the Development Server**
-   Start the FastAPI development server with Uvicorn:
-   ```bash
-   cd backend
-   uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-   ```
-   The backend will be available at http://localhost:8000.
+Open the API docs at `http://127.0.0.1:8000/docs`. The root route and `/db_check` provide basic API and database status responses.
 
-## Project Structure
+## Repository layout
 
-- `backend/app/`: Core FastAPI application logic (controllers, models, API routes, templates, etc.)
-- `alembic/` (if configured): Database migrations
-- `docker-compose.yml`: Local database orchestration
-- `pyproject.toml` & `uv.lock`: Dependency definitions and locks
-
----
-
-*Note: This backend also handles the frontend rendering using server-side Jinja2 templates for public views. Everything operates securely within the FastAPI structure without requiring a separate frontend deployment.*
+- `backend/app/api/v1/routers/` — API route groups.
+- `backend/app/models/` and `backend/app/schemas/` — database models and request/response schemas.
+- `backend/alembic/` — database migrations.
+- `backend/alembic.ini` — Alembic settings.
+- `pyproject.toml` and `uv.lock` — dependency and Python project settings.
