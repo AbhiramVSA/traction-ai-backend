@@ -1,6 +1,10 @@
-# Traction Backend
+<p align="center">
+  <img src="assets/traction-api-mark.png" alt="Traction API endpoints and database mark" width="200" />
+</p>
 
-FastAPI and PostgreSQL API for the Traction client. The service includes routes for authentication, projects, chat, documents, public project pages, and sharing. The frontend is in [traction-ai](https://github.com/AbhiramVSA/traction-ai).
+<h1 align="center">Traction Backend</h1>
+
+<p align="center">FastAPI and PostgreSQL API for the Traction client. The service includes routes for authentication, projects, chat, documents, public project pages, and sharing. The frontend is in <a href="https://github.com/AbhiramVSA/traction-ai">traction-ai</a>.</p>
 
 ## Stack
 
